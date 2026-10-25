@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Robo</title>
+<meta name="description" content="Robo are an art-rock band from York. New single Waste of Space out now on 25 Hour Convenience Store.">
+<meta property="og:title" content="Robo">
+<meta property="og:description" content="Art-rock from York. Waste of Space out now.">
+<meta property="og:image" content="img/poster.jpg">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..800,0..100,0..1&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --silver: #dcdcd6;     /* photo paper, from the B&W gig posters */
+    --ink: #1c1c1a;
+    --fishbowl: #43ab8c;   /* Waste of Space cover */
+    --claw: #e5603f;       /* Claw Machine cover, nudged lighter so ink text passes 4.5:1 */
+    --ease-out: cubic-bezier(.23, 1, .32, 1);
+    --display: "Fraunces", Georgia, serif;
+    --body: "Instrument Sans", system-ui, sans-serif;
+    --gutter: clamp(16px, 4vw, 48px);
+  }
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  body {
+    margin: 0; background: var(--silver); color: var(--ink);
+    font: 400 1.0625rem/1.55 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; text-underline-offset: .18em; text-decoration-thickness: .07em; }
+  a, button { touch-action: manipulation; }
+  :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+  ::selection { background: var(--fishbowl); color: var(--ink); }
+  h1, h2, h3, .display { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 var(--gutter); }
+  .display {
+    font-family: var(--display); font-weight: 420;
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    letter-spacing: -.02em; line-height: 1;
+  }
+  .skip { position: absolute; left: -999px; }
+  .skip:focus { left: 16px; top: 16px; background: var(--ink); color: var(--silver); padding: 8px 12px; z-index: 10; }
+
+  /* ---------- nav ---------- */
+  .nav { position: absolute; top: 0; left: 0; right: 0; z-index: 2; display: flex; justify-content: flex-end; padding: 20px var(--gutter); color: #fff; }
+  .nav ul { display: flex; gap: clamp(14px, 2.4vw, 32px); list-style: none; margin: 0; padding: 0; font-weight: 500; text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+  .nav ul a { display: inline-block; padding: 11px 2px; text-decoration: none; }
+
+  /* the real logo, recoloured: solid silhouette via mask */
+  .logo-ink { display: inline-block; background: currentColor; aspect-ratio: 1248 / 598;
+    -webkit-mask: url(img/logo-mask.png) center / contain no-repeat; mask: url(img/logo-mask.png) center / contain no-repeat; }
+
+  /* ---------- hero: their own gig poster, with a fresh bill beside it ---------- */
+  .hero { position: relative; color: #fff; overflow: hidden; background: #3a3936; isolation: isolate; }
+  .hero::before { content: ""; position: absolute; inset: -40px; z-index: -1; background: url(img/poster-blur.jpg) center / cover; filter: blur(24px) brightness(.55); }
+  .hero .inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 9vh, 96px) var(--gutter) clamp(40px, 6vh, 72px);
+    display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
+  .hero figure { margin: 0; justify-self: end; width: min(100%, calc((100svh - 140px) * 1080 / 1150)); min-width: 300px; }
+  .hero h1 { margin: 0; }
+  .hero figure img { width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,.45); }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero figure img { animation: arrive .7s var(--ease-out) both; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(16px); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero figure img { animation: fade .15s ease-out both; }
+    @keyframes fade { from { opacity: 0; } }
+  }
+  .hero .bill h2 { font-size: clamp(3rem, 6.4vw, 5.8rem); margin: 0; }
+  .hero .bill p { font-family: var(--display); font-size: clamp(1.2rem, 2vw, 1.6rem); margin: .3em 0 1.2em; max-width: 26ch; line-height: 1.25; font-variation-settings: "opsz" 48, "SOFT" 100; }
+  .hero .bill .next { font-family: var(--body); font-size: 1rem; margin: 32px 0 0; opacity: .85; }
+  .hero .bill .next a { font-weight: 600; }
+  .hero .bill .listen { margin: 0; }
+  .hero .btn { border-color: #fff; color: #fff; }
+  .hero .btn.solid { background: #fff; color: var(--ink); }
+  .intro { padding: clamp(48px, 8vw, 104px) 0; }
+  .intro p {
+    margin: 0; max-width: 24ch;
+    font-size: clamp(1.9rem, 4.4vw, 3.6rem); line-height: 1.08;
+  }
+
+  /* ---------- painted single panels ---------- */
+  .single { position: relative; padding: clamp(56px, 9vw, 120px) 0; overflow: hidden; isolation: isolate; }
+  .single::before { /* brush texture over the flat colour */
+    content: ""; position: absolute; inset: 0; z-index: -1; opacity: .25; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2600' height='500'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='2600' height='500' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .single.wos { background: var(--fishbowl); }
+  .single.claw { background: var(--claw); }
+  .single .wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+  .single.claw .wrap { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
+  .single.claw .cover { order: 2; }
+  .cover img { width: 100%; aspect-ratio: 1; object-fit: cover;  }
+  .single h2 { font-size: clamp(3.2rem, 8vw, 6rem); margin: 0 0 .3em; }
+  .single p { max-width: 46ch; margin: 0 0 1em; }
+  .single .when { font-weight: 600; }
+  .single blockquote { margin: 0 0 1em; }
+  .single blockquote p { font-size: clamp(1.3rem, 2.2vw, 1.7rem); }
+  .listen { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0 0; padding: 0; list-style: none; }
+  .btn {
+    display: inline-flex; align-items: center; min-height: 52px; padding: 0 20px; border: 2px solid var(--ink);
+    font: inherit; font-weight: 600; text-decoration: none; background: transparent; color: inherit; cursor: pointer;
+    transition: background-color .18s var(--ease-out), color .18s var(--ease-out), transform .16s var(--ease-out);
+  }
+  .btn.solid { background: var(--ink); color: var(--silver); }
+  .btn:active { transform: scale(.97); }
+
+  /* ---------- video facades ---------- */
+  .video { position: relative; aspect-ratio: 16 / 9; background: #000; margin-top: 28px; }
+  .video button {
+    all: unset; cursor: pointer; position: absolute; inset: 0; display: grid; place-items: center;
+  }
+  .video button img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .video button span {
+    position: relative; background: var(--silver); color: var(--ink); font-weight: 600;
+    padding: 12px 20px 12px 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .video button span::before { content: ""; border-left: 14px solid currentColor; border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+  .video button span { transition: background-color .18s var(--ease-out), color .18s var(--ease-out); }
+  .video button:focus-visible span { background: var(--ink); color: var(--silver); }
+  .video button:focus-visible { outline: 3px solid var(--silver); outline-offset: -6px; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+  /* ---------- section headings ---------- */
+  section.plain { padding: clamp(64px, 10vw, 128px) 0; }
+  .sec-title { font-size: clamp(3.4rem, 9vw, 6rem); margin: 0 0 clamp(28px, 4vw, 56px); }
+
+  /* ---------- gigs, set like their posters ---------- */
+  .gigs { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+  .gigs li {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 32px;
+    padding: 22px 0 24px; border-bottom: 2px solid var(--ink);
+  }
+  .gigs .venue { font-size: clamp(2rem, 5.4vw, 4.2rem); margin: 0; }
+  .gigs .date { font-family: var(--display); font-style: italic; font-size: clamp(1.1rem, 2vw, 1.5rem); margin: 6px 0 0; font-variation-settings: "opsz" 36; }
+  .gigs .note { font-size: .95rem; margin: 4px 0 0; opacity: .75; }
+  .gigs-more { margin: 20px 0 0; }
+  .past { margin-top: 56px; }
+  .past h3 { font-family: var(--display); font-weight: 500; font-size: 1.6rem; margin: 0 0 12px; }
+  .past ul { list-style: none; padding: 0; margin: 0; columns: 2 18rem; column-gap: 40px; }
+  .past li { padding: 6px 0; break-inside: avoid; }
+  .past time { display: inline-block; min-width: 7.5em; font-weight: 600; }
+
+  /* ---------- watch ---------- */
+  .watch { background: var(--ink); color: var(--silver); }
+  .watch .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); }
+  .watch .grid .video { margin-top: 0; }
+  .watch h3 { font-family: var(--display); font-weight: 500; font-size: 1.45rem; margin: 14px 0 2px; line-height: 1.15; }
+  .watch p { margin: 0; opacity: .7; font-size: .95rem; }
+  .watch .feature { margin-bottom: clamp(32px, 5vw, 64px); }
+  .watch .feature h3 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); }
+
+  /* ---------- about ---------- */
+  .about .cols { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
+  .about img { width: 100%; filter: contrast(1.05); }
+  .about .lede { font-family: var(--display); font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.25; margin: 0 0 1em; font-variation-settings: "opsz" 48, "SOFT" 100; }
+  .about p { max-width: 58ch; }
+  .members { list-style: none; padding: 0; margin: 28px 0; border-top: 1px solid var(--ink); }
+  .members li { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--ink); }
+  .members li span:first-child { font-weight: 600; }
+  .members li span:last-child { text-align: right; }
+  blockquote { margin: 40px 0 0; padding: 0; }
+  blockquote p { font-family: var(--display); font-style: italic; font-size: clamp(1.4rem, 2.4vw, 1.9rem); line-height: 1.2; margin: 0 0 .4em; font-variation-settings: "opsz" 72; }
+  blockquote footer { font-size: .95rem; }
+
+  /* ---------- top tracks, in Spotify order ---------- */
+  .tracks { list-style: none; padding: 0; margin: 0; counter-reset: rank; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); grid-auto-flow: column; column-gap: clamp(24px, 5vw, 72px); }
+  .tracks li:nth-child(1), .tracks li:nth-child(6) { border-top: 2px solid var(--ink); }
+  .tracks li { counter-increment: rank; border-bottom: 1px solid var(--ink); }
+  .tracks a { display: grid; grid-template-columns: 2.2em 64px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 12px 4px; text-decoration: none; }
+  .tracks a::before { content: counter(rank); font-family: var(--display); font-size: 1.5rem; font-variation-settings: "opsz" 48; text-align: right; }
+  .tracks img { width: 64px; height: 64px; object-fit: cover; }
+  .tracks .t { font-family: var(--display); font-size: clamp(1.25rem, 2vw, 1.6rem); line-height: 1.1; font-variation-settings: "opsz" 48, "SOFT" 100; }
+  .tracks .d { font-variant-numeric: tabular-nums; opacity: .7; }
+  .tracks a:focus-visible .t { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .15em; }
+  .tracks-more { margin: 24px 0 0; }
+
+  /* ---------- footer ---------- */
+  footer.site { border-top: 2px solid var(--ink); padding: clamp(48px, 8vw, 96px) 0 40px; }
+  footer.site .top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: end; }
+  footer.site h2 { font-size: clamp(2.4rem, 6vw, 4.8rem); margin: 0 0 .3em; }
+  footer.site p { margin: 0 0 20px; max-width: 44ch; }
+  .signup { max-width: 30rem; }
+  .signup label { display: block; font-weight: 600; margin-bottom: 8px; }
+  .signup-row { display: flex; gap: 8px; }
+  .signup [hidden] { display: none; }
+  .signup input[type=email] { flex: 1; min-width: 0; font: inherit; min-height: 52px; padding: 0 14px; border: 2px solid var(--ink); background: #f3f3ef; color: var(--ink); border-radius: 0; }
+  .signup input[type=email]:focus-visible { outline-offset: 2px; }
+  .signup input::placeholder { color: #6b6b66; }
+  .signup input[aria-invalid=true] { border-color: #a3271a; }
+  .signup .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .signup button[disabled] { opacity: .55; cursor: progress; }
+  footer.site .signup-msg { margin: 10px 0 0; min-height: 1.5em; font-weight: 500; }
+  .signup-msg.error { color: #a3271a; }
+  .socials { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0 22px; font-weight: 500; }
+  .socials a { display: inline-block; padding: 11px 0; }
+  .foot-logo { width: 150px; color: var(--ink); margin-bottom: 20px; }
+  footer.site .small { margin-top: 56px; font-size: .9rem; opacity: .7; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  /* ---------- hover, only for devices that really hover ---------- */
+  @media (hover: hover) and (pointer: fine) {
+    a:hover { text-decoration-thickness: .12em; }
+    .nav ul a:hover { text-decoration: underline; }
+    .btn:hover { background: var(--ink); color: var(--silver); }
+    .btn.solid:hover { background: transparent; color: var(--ink); }
+    .hero .btn:hover { background: #fff; color: var(--ink); }
+    .hero .btn.solid:hover { background: transparent; color: #fff; }
+    .video button:hover span { background: var(--ink); color: var(--silver); }
+    .tracks a:hover .t { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .15em; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px) {
+    .hero .inner { grid-template-columns: 1fr; padding-top: 64px; }
+    .hero figure { justify-self: center; width: 100%; max-width: 520px; min-width: 0; }
+    .single .wrap, .single.claw .wrap, .about .cols, footer.site .top { grid-template-columns: 1fr; }
+    .single.claw .cover { order: 0; }
+    .cover { max-width: 460px; }
+    .watch .grid { grid-template-columns: 1fr; }
+    .tracks { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
+    .tracks li:nth-child(6) { border-top: 0; }
+    .gigs li { grid-template-columns: 1fr; }
+    .gigs li .btn { justify-self: start; }
+  }
+  @media (max-width: 560px) {
+    .signup-row { flex-direction: column; }
+    .nav ul { gap: 14px; font-size: .95rem; }
+    .nav ul li.optional { display: none; }
+    .tracks a { grid-template-columns: 1.6em 52px minmax(0, 1fr) auto; gap: 12px; }
+    .tracks img { width: 52px; height: 52px; }
+    
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="#music">Music</a></li>
+      <li><a href="#live">Live</a></li>
+      <li class="optional"><a href="#watch">Watch</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="inner">
+      <figure>
+        <h1><img src="img/poster.jpg" width="1080" height="1150" fetchpriority="high" alt="Robo: black and white gig poster with the band's swirling logo above three members leaping off a stone bench while the fourth sits beneath, shading her eyes."></h1>
+      </figure>
+      <div class="bill">
+        <h2 class="display">Waste of Space</h2>
+        <p>The new single, produced by Gary Powell. Out now.</p>
+        <ul class="listen">
+          <li><a class="btn solid" href="https://cargo-independent.ffm.to/yetymylwbt">Listen now</a></li>
+          <li><a class="btn" href="#waste-of-space">Watch the video</a></li>
+        </ul>
+        <p class="next">Next show: <a href="#live">The Rat &amp; Pigeon, Manchester, 28 November</a></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap intro">
+    <p class="display">Art-rock from York. Three voices, intertwining harmonies, and songs that won&#8217;t sit still.</p>
+  </div>
+
+  <div id="music">
+    <section class="single wos" id="waste-of-space" aria-labelledby="wos-title">
+      <div class="wrap">
+        <div class="cover"><img src="img/wos.jpg" width="1080" height="1080" alt="Waste of Space cover art: a hand-painted goldfish bowl in black ink on a teal wash."></div>
+        <div>
+          <h2 class="display" id="wos-title">Waste of Space</h2>
+          <p class="when">Out 29 September 2026 on 25 Hour Convenience Store</p>
+          <p>Recorded at The Albion Rooms in Margate with The Libertines' Gary Powell producing. The single landed just ahead of the band's third UK tour.</p>
+          <ul class="listen">
+            <li><a class="btn solid" href="https://cargo-independent.ffm.to/yetymylwbt">Listen now</a></li>
+            <li><a class="btn" href="https://open.spotify.com/artist/3U041FxU4RcB1Bo1EsGYLX">Spotify</a></li>
+            <li><a class="btn" href="https://music.apple.com/gb/artist/robo/1743030047">Apple Music</a></li>
+          </ul>
+          <div class="video" data-yt="SwFQPHWsPCQ">
+            <button type="button" aria-label="Play the Waste of Space video"><img src="img/yt-SwFQPHWsPCQ.jpg" alt="" loading="lazy"><span>Play the video</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="single claw" aria-labelledby="claw-title">
+      <div class="wrap">
+        <div class="cover"><img src="img/claw-art.jpg" width="1080" height="1080" alt="Claw Machine cover art: a black brushstroke claw on a red painted ground." loading="lazy"></div>
+        <div>
+          <h2 class="display" id="claw-title">Claw Machine</h2>
+          <blockquote>
+            <p>“New favourite thing from an exciting new band.”</p>
+            <footer>Chris Hawkins, BBC Radio 6 Music</footer>
+          </blockquote>
+          <p>The single before, and the one that got them on 6 Music.</p>
+          <ul class="listen">
+            <li><a class="btn solid" href="https://cargo-independent.ffm.to/utu8lidgl5">Listen now</a></li>
+          </ul>
+          <div class="video" data-yt="sUnu57PYvCg">
+            <button type="button" aria-label="Play the Claw Machine video"><img src="img/yt-sUnu57PYvCg.jpg" alt="" loading="lazy"><span>Play the video</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="plain" aria-labelledby="top-title">
+      <div class="wrap">
+        <h2 class="display sec-title" id="top-title">Top tracks</h2>
+        <ol class="tracks">
+          <li><a href="https://open.spotify.com/track/5MM8sgYDhrY3iNpkmfO012"><img src="img/tracks/5MM8sgYDhrY3iNpkmfO012.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">Waste Of Space</span><span class="d">3:22</span></a></li>
+          <li><a href="https://open.spotify.com/track/3zXvtBW0FPyiks4x7z7St5"><img src="img/tracks/3zXvtBW0FPyiks4x7z7St5.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">Claw Machine</span><span class="d">3:58</span></a></li>
+          <li><a href="https://open.spotify.com/track/7z3i7fq6k4RuD5VijiEZBN"><img src="img/tracks/7z3i7fq6k4RuD5VijiEZBN.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">Fever Diva</span><span class="d">4:08</span></a></li>
+          <li><a href="https://open.spotify.com/track/6BHsMoxJffLbVnbaQJz2Cy"><img src="img/tracks/6BHsMoxJffLbVnbaQJz2Cy.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">Landmine</span><span class="d">3:04</span></a></li>
+          <li><a href="https://open.spotify.com/track/3nzDHSgvxRwv6OPvKRgnW4"><img src="img/tracks/3nzDHSgvxRwv6OPvKRgnW4.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">By The River</span><span class="d">2:13</span></a></li>
+          <li><a href="https://open.spotify.com/track/3dXKj4t9LiCp11KiqFw4sy"><img src="img/tracks/3dXKj4t9LiCp11KiqFw4sy.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">Lighthouse</span><span class="d">3:18</span></a></li>
+          <li><a href="https://open.spotify.com/track/16oq5HANiQufmoc7U5XR0P"><img src="img/tracks/16oq5HANiQufmoc7U5XR0P.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">Heartfelt</span><span class="d">2:27</span></a></li>
+          <li><a href="https://open.spotify.com/track/3E3nWYS56ZbGAd8d25ZIAV"><img src="img/tracks/3E3nWYS56ZbGAd8d25ZIAV.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">Red Horizons</span><span class="d">3:21</span></a></li>
+          <li><a href="https://open.spotify.com/track/00CrQMCBtbHEF76kJu0d2r"><img src="img/tracks/00CrQMCBtbHEF76kJu0d2r.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">Rugby Team</span><span class="d">3:13</span></a></li>
+          <li><a href="https://open.spotify.com/track/6RykcbhtplOu9x60mtaQqz"><img src="img/tracks/6RykcbhtplOu9x60mtaQqz.jpg" width="300" height="300" alt="" loading="lazy"><span class="t">All Night</span><span class="d">5:38</span></a></li>
+        </ol>
+        <p class="tracks-more"><a href="https://open.spotify.com/artist/3U041FxU4RcB1Bo1EsGYLX">Listen to everything on Spotify</a> or <a href="https://robotheband.bandcamp.com/">buy on Bandcamp</a>.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="plain" id="live" aria-labelledby="live-title" style="padding-top:0">
+    <div class="wrap">
+      <h2 class="display sec-title" id="live-title">Live</h2>
+      <ul class="gigs">
+        <li>
+          <div>
+            <p class="display venue">The Rat &amp; Pigeon, Manchester</p>
+            <p class="date">Saturday 28th November</p>
+            <p class="note">Supporting Marketplace, with slouch</p>
+          </div>
+          <a class="btn" href="https://www.fatsoma.com/e/invmb40a/marketplace-manchester-the-rat-pigeon">Get tickets</a>
+        </li>
+      </ul>
+      <p class="gigs-more">More dates on the way. <a href="https://www.bandsintown.com/a/293028-robo">Follow Robo on Bandsintown</a> to hear first.</p>
+
+      <div class="past">
+        <h3>Recently played</h3>
+        <ul>
+          <li><time datetime="2026-10-23">23 Oct</time>The Komodo, Lincoln</li>
+          <li><time datetime="2026-10-21">21 Oct</time>BLOC+, Glasgow</li>
+          <li><time datetime="2026-10-08">8 Oct</time>The Crescent, York</li>
+          <li><time datetime="2026-09-19">19 Sep</time>The New Adelphi Club, Hull</li>
+          <li><time datetime="2026-05-29">29 May</time>The Stag's Head, London</li>
+          <li><time datetime="2026-05-21">21 May</time>The Fulford Arms, York</li>
+          <li><time datetime="2026-05-20">20 May</time>The Royal Park, Leeds</li>
+          <li><time datetime="2025-11-21">21 Nov 2025</time>The Belfrey Hall, York</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="plain watch" id="watch" aria-labelledby="watch-title">
+    <div class="wrap">
+      <h2 class="display sec-title" id="watch-title">Watch</h2>
+      <div class="feature">
+        <div class="video" data-yt="KS1IUvGyQLg">
+          <button type="button" aria-label="Play Live at The Crescent, full set"><img src="img/yt-KS1IUvGyQLg.jpg" alt="" loading="lazy"><span>Play the full set</span></button>
+        </div>
+        <h3>Live at The Crescent</h3>
+        <p>The full hometown set, filmed in York.</p>
+      </div>
+      <div class="grid">
+        <div>
+          <div class="video" data-yt="SwFQPHWsPCQ">
+            <button type="button" aria-label="Play the Waste of Space video"><img src="img/yt-SwFQPHWsPCQ.jpg" alt="" loading="lazy"><span>Play</span></button>
+          </div>
+          <h3>Waste of Space</h3>
+          <p>Official music video</p>
+        </div>
+        <div>
+          <div class="video" data-yt="hJ9soq6G2g4">
+            <button type="button" aria-label="Play Robo on North Sea Soundcheck"><img src="img/yt-hJ9soq6G2g4.jpg" alt="" loading="lazy"><span>Play</span></button>
+          </div>
+          <h3>North Sea Soundcheck</h3>
+          <p>Episode 12</p>
+        </div>
+        <div>
+          <a href="https://www.bbc.co.uk/sounds/play/p0nhks9w" style="text-decoration:none">
+            <div class="video"><img src="img/bbc.jpg" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></div>
+            <h3>BBC Introducing session</h3>
+          </a>
+          <p>Listen on BBC Sounds</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="plain about" id="about" aria-labelledby="about-title">
+    <div class="wrap">
+      <h2 class="display sec-title" id="about-title">About</h2>
+      <div class="cols">
+        <img src="img/avatar.jpg" width="1335" height="1335" alt="The four members of Robo in a sunlit wood: one in a brown blazer with arms flung wide, one in a white ruffled skirt and red cowboy boots, one sitting on a fallen branch, one in a blue suit." loading="lazy">
+        <div>
+          <p class="lede">Robo formed in York in 2023. Frank and Eric have been writing songs together since they were three; Holly and James complete the line-up.</p>
+          <p>Three vocalists, more than one songwriter, and harmonies that go where you don't expect. Too arty to be indie, too poppy for conventional art-rock. They've sold out two York headline shows, toured the UK twice, and are now signed to 25 Hour Convenience Store, the label run by The Libertines' Gary Powell.</p>
+          <ul class="members">
+            <li><span>Francisco Garcia&#8209;Luengo</span><span>Vocals, guitars</span></li>
+            <li><span>Eric Bell</span><span>Vocals, guitars</span></li>
+            <li><span>Holly Brewer</span><span>Bass, vocals</span></li>
+            <li><span>James Paton</span><span>Drums</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <span class="logo-ink foot-logo" role="img" aria-label="Robo"></span>
+        <h2 class="display">Hear it first</h2>
+        <p>New songs and gig announcements, straight to your inbox.</p>
+        <form class="signup" action="https://8be5b445.sibforms.com/serve/MUIFAG2Y58x0tHXRCqCRocLNFOtXInOkPGIGacCRwnRX5mx2JUDfe1SD3wKIU9YMDxgdljP4kriat0fPwyxqRrMFUrqqcZjT4WEUnd6EilH_JrBtaVpB_X31VgcwtcNaFNc0KHo0swvl8ilHMqVwOeJeKilgkz0lhVDIic6dsiQ_eaDnNMP_HGzFey65CMwCM_X0vp9vR2kHM8F4" method="post" target="_blank" novalidate>
+          <label for="signup-email">Email address</label>
+          <div class="signup-row">
+            <input id="signup-email" type="email" name="EMAIL" autocomplete="email" required placeholder="you@example.com">
+            <input type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+            <input type="hidden" name="locale" value="en">
+            <button class="btn solid" type="submit">Subscribe</button>
+          </div>
+          <p class="signup-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+      <ul class="socials">
+        <li><a href="https://www.instagram.com/robo.band/">Instagram</a></li>
+        <li><a href="https://www.tiktok.com/@robo.band">TikTok</a></li>
+        <li><a href="https://www.youtube.com/@roboband1">YouTube</a></li>
+        <li><a href="https://www.facebook.com/share/1BCPdgvYFc/">Facebook</a></li>
+        <li><a href="https://open.spotify.com/artist/3U041FxU4RcB1Bo1EsGYLX">Spotify</a></li>
+        <li><a href="https://robotheband.bandcamp.com/">Bandcamp</a></li>
+      </ul>
+    </div>
+    <div class="small">
+      <span>Robo, York</span>
+      <span>Released on 25 Hour Convenience Store</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Swap a video thumbnail for the YouTube player only when someone asks for it.
+  document.querySelectorAll('.video[data-yt] button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const box = btn.parentElement;
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1`;
+      f.title = btn.getAttribute('aria-label') || btn.textContent.trim();
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      box.replaceChildren(f);
+    });
+  });
+
+  // Mailing list: post straight to the band's Brevo list without leaving the page.
+  const signup = document.querySelector('.signup');
+  signup.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = signup.EMAIL, msg = signup.querySelector('.signup-msg'), btn = signup.querySelector('button');
+    msg.className = 'signup-msg';
+    if (!email.validity.valid) {
+      email.setAttribute('aria-invalid', 'true');
+      msg.classList.add('error');
+      msg.textContent = 'Enter an email address like name@example.com.';
+      email.focus();
+      return;
+    }
+    email.removeAttribute('aria-invalid');
+    btn.disabled = true; btn.textContent = 'Subscribing…';
+    try {
+      const res = await fetch(signup.action + '?isAjax=1', { method: 'POST', body: new FormData(signup) });
+      const data = await res.json();
+      if (!data.success) throw new Error();
+      signup.querySelector('.signup-row').hidden = true;
+      signup.querySelector('label').hidden = true;
+      msg.textContent = "You're on the list. Thanks!";
+    } catch {
+      signup.submit(); // fall back to Brevo's own page in a new tab
+      msg.textContent = 'Finishing your signup in a new tab.';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Subscribe';
+    }
+  });
+</script>
+</body>
+</html>
